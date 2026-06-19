@@ -1,0 +1,29 @@
+# AI Money Manager - Caddy HTTPS Reverse Proxy
+# Place this file as Caddyfile in project root
+# Run: caddy run (or caddy start)
+
+{
+    auto_https off
+}
+
+yourdomain.com {
+    reverse_proxy /api/* localhost:8000
+    reverse_proxy localhost:80
+
+    tls {
+        # Caddy automatically fetches Let's Encrypt certs
+        # For custom certs, use: tls /path/to/cert.pem /path/to/key.pem
+    }
+
+    # Security headers
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        X-XSS-Protection "1; mode=block"
+        Referrer-Policy "strict-origin-when-cross-origin"
+    }
+
+    # Compress responses
+    encode gzip zstd
+}
